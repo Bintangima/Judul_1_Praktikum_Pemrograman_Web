@@ -1,4 +1,4 @@
-const { isValidElement } = require("react");
+
 
 // 1. Inisialisasi State Data Mahasiswa (Single Source of Truth)
 let dataMahasiswa = [
@@ -39,6 +39,7 @@ const inputNama = document.getElementById("nama");
 const selectProdi = document.getElementById("program_studi");
 const inputAngkatan = document.getElementById("angkatan");
 const inputEmail = document.getElementById("email");
+const inputSearch = document.getElementById("input-search");
 
 
 
@@ -46,7 +47,7 @@ const inputEmail = document.getElementById("email");
 function showAlert(message, type = "success"){
     if (!alertBox) return;
     alertBox.textContent = message;
-    alertBox.className = `alert-box alert-$(type) show`;
+    alertBox.className = `alert-box alert-${type} show`;
 
     setTimeout(() => {
         alertBox.className = "alert-box";
@@ -59,7 +60,7 @@ function updateCounter(displayedCount, totalCount = dataMahasiswa.length){
         totalBadge.textContent = totalCount;
     }
     if (totalInfo) {
-        totalInfo.textContent = `Menampilkan $(displayedCount) dari ${totalCount} mahasiswa`;    
+        totalInfo.textContent = `Menampilkan ${displayedCount} dari ${totalCount} mahasiswa`;    
     }
 }
 
@@ -72,7 +73,7 @@ function renderTable(data = dataMahasiswa) {
     // Percobaan 3-2 langkah 6
     tabelBody.innerHTML = "";
     if (data.length === 0) {
-       
+
         // Percobaan 3-2 langkah 7
        tabelBody.innerHTML = `
        <tr>
@@ -82,26 +83,26 @@ function renderTable(data = dataMahasiswa) {
        </tr>`;
        updateCounter(0);
        return;
-       
+
     }
-    
+
     data.forEach((mhs, index) => {
         const tr = document.createElement("tr");
-        
+
         // Percobaan 3-2 langkah 8
         tr.innerHTML = `
         <td>${index + 1}</td>
         <td>
-        <img src="img/avatar-default.svg" alt="Foto $(mhs.nama)"
+        <img src="img/avatar-default.svg" alt="Foto ${mhs.nama}"
         class="avatar-img" width="36" height="36">
         </td>
         <td><strong>${mhs.npm}</strong></td>
         <td>${mhs.nama}</td>
-        <td><span class="badge">${mhs.program_studi}</spam></td>
+        <td><span class="badge">${mhs.program_studi}</span></td>
         <td>${mhs.angkatan}</td>
         <td><a href="mailto:${mhs.email}" class="link-email">${mhs.email}</a></td>
         <td>
-        <button typ="button" class="btn btn-danger btn-sm"
+        <button type="button" class="btn btn-danger btn-sm"
         onclick="hapusMahasiswa('${mhs.npm}')">
         Hapus
         </button>
@@ -119,7 +120,7 @@ function renderTable(data = dataMahasiswa) {
 
 // 6. Validasi Form Sisi Klien Menggunakan Regular Expression (Percobaan 3-3).
 function validateForm(npm, nama, prodi, angkatan, email){
-    
+
 
 
 if (!/^[0-9]{8,12}$/.test(npm)){
@@ -144,7 +145,7 @@ if(isNaN(angk) || angk < 2018 || angk > 2026){
 }
 
 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    return { isValid: false, message: "Format alamat email tidak valid (contoh: nama@domain.ac.id."};
+    return { isValid: false, message: "Format alamat email tidak valid (contoh: nama@domain.ac.id)."};
 }
 
 return { isValid: true, message: ""};
@@ -159,13 +160,13 @@ if (formTambah) {
         // Percobaan 3-4 Langkah 5
         const npm = inputNpm.value.trim();
         const nama = inputNama.value.trim();
-        const prodi =  selectProdi.value;
+        const prodi = selectProdi.value;
         const angkatan = inputAngkatan.value.trim();
         const email = inputEmail.value.trim();
 
         const validation = validateForm(npm, nama, prodi, angkatan, email);
-        
-        
+
+
 
         if (!validation.isValid) {
             // Percobaan 3-4 Langkah 6
@@ -176,13 +177,13 @@ if (formTambah) {
         // Percobaan 3-4 Langkah 7
         const mahasiswaBaru = {
             npm,
-            nama, 
+            nama,
             program_studi: prodi,
             angkatan: parseInt(angkatan, 10),
             email
         };
 
-
+        dataMahasiswa.push(mahasiswaBaru);
 
         // Percobaan 3-4 Langkah 8
         renderTable(dataMahasiswa);
@@ -211,22 +212,19 @@ if (konfirmasi){
 if (inputSearch){
     inputSearch.addEventListener("input", function(){
         const keyword = inputSearch.value.trim().toLowerCase();
-    
+
 if (keyword === ""){
     renderTable(dataMahasiswa);
 }else{
     const hasilFilter = dataMahasiswa.filter(mhs => 
         mhs.npm.toLowerCase().includes(keyword) ||
-        mhs.nama.toLowerCase().includes.apply(keyword) ||
+        mhs.nama.toLowerCase().includes(keyword) ||
         mhs.program_studi.toLowerCase().includes(keyword)
     );
     renderTable(hasilFilter);
 } 
     });
 }
-
-
-
 
 
 // Inisialisasi saat DOM selesai dimuat
